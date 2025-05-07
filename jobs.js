@@ -327,7 +327,7 @@ function updateSearchTags() {
 
 function createTag(label, value, onRemove) {
   const span = document.createElement("span");
-  span.className = "filter-tag";
+  span.className = "filter-tag p-4 bg-[var(--complementary-color)] text-[var(--white-color)] italic";
   span.textContent = `${label}: ${value} `;
   const btn = document.createElement("button");
   btn.type = "button";
