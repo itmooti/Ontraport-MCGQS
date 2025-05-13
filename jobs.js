@@ -1,20 +1,22 @@
-const apiKey = "zeYfVRNaPP_E-fQxxHelQ";
-const apiEndpoint = "https://mcgqs.vitalstats.app/api/v1/graphql";
-let formToggler = document.querySelectorAll(".formToggler");
-let testForm = document.querySelector(".testForm");
-let customOverlay = document.querySelector(".customOverlay");
-let formClose = document.querySelector(".formClose");
-const searchInput = document.getElementById("searchInputJobs");
-const searchQueryContent = document.querySelector(".searchQueryContent");
-const jobBtn = document.getElementById("job-filter-btn");
-const jobDropdown = document.getElementById("job-filter-dropdown");
-const jobSelected = document.getElementById("job-selected-filter");
-const jobOptions = document.getElementById("job-filter-options");
-const quoteBtn = document.getElementById("quote-filter-btn");
-const quoteDropdown = document.getElementById("quote-filter-dropdown");
-const quoteSelected = document.getElementById("quote-selected-filter");
-const quoteOptions = document.getElementById("quote-filter-options");
-const tableHeaders = document.querySelectorAll("th[data-field]");
+ const apiKey = "zeYfVRNaPP_E-fQxxHelQ";
+  const apiEndpoint = "https://mcgqs.vitalstats.app/api/v1/graphql";
+  let formToggler = document.querySelectorAll(".formToggler");
+  let testForm = document.querySelector(".testForm");
+  let customOverlay = document.querySelector(".customOverlay");
+  let formClose = document.querySelector(".formClose");
+  const searchInput = document.getElementById("searchInputJobs");
+  const searchQueryContent = document.querySelector(".searchQueryContent");
+  const jobBtn = document.getElementById("job-filter-btn");
+  const jobDropdown = document.getElementById("job-filter-dropdown");
+  const jobSelected = document.getElementById("job-selected-filter");
+  const jobOptions = document.getElementById("job-filter-options");
+  const quoteBtn = document.getElementById("quote-filter-btn");
+  const quoteDropdown = document.getElementById("quote-filter-dropdown");
+  const quoteSelected = document.getElementById("quote-selected-filter");
+  const quoteOptions = document.getElementById("quote-filter-options");
+  const tableHeaders = document.querySelectorAll("th[data-field]");
+  
+  const companyName = "[Visitor//Company//Name]"; 
 
 const filterOptionsDataJobStatus = [
   {
@@ -350,9 +352,18 @@ async function fetchJobs() {
   const orderBy = buildOrderByClause();
 
   const clauses = [];
+  clauses.push({
+    kind: "where",
+    content: `
+      Referral_Source: [
+        { where: { Company: [ { where: { name: "${companyName}" } } ] } }
+      ]
+    `
+  });
+  
   if (state.jobStatus) {
     clauses.push({
-      kind: "where",
+      kind: "andWhere",
       content: `job_status: "${state.jobStatus}"`,
     });
   }
