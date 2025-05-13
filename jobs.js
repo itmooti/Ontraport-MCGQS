@@ -15,8 +15,6 @@
   const quoteSelected = document.getElementById("quote-selected-filter");
   const quoteOptions = document.getElementById("quote-filter-options");
   const tableHeaders = document.querySelectorAll("th[data-field]");
-  
-  const companyName = "[Visitor//Company//Name]"; 
 
 const filterOptionsDataJobStatus = [
   {
