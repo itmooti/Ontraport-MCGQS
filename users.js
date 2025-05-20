@@ -112,77 +112,70 @@ const apiKey = "zeYfVRNaPP_E-fQxxHelQ";
         return `orderBy: [{ path: [${paths}], type: ${state.sortOrder} }]`;
     }
 
-    async function fetchContacts() {
+   async function fetchContacts() {
         renderLoading();
         const offset = (state.page - 1) * state.limit;
 
         const queryClauses = [
-            `{ where: { Company: [{ where: { name: "${companyName}" } }] } }`,
+            `{ where: { Company: [ { where: { name: "${companyName}" } } ] } }`
         ];
 
         if (state.search) {
             const searchTerm = `%${state.search.trim()}%`;
-            const searchConditions = [];
 
-            // Client name conditions
             const clientConditions = [
                 `{
-                    where: {
-                        first_name: null
-                        _OPERATOR_: like
-                        _VALUE_EXPRESSION_: "${searchTerm}"
-                    }
-                }`,
+         where: {
+           first_name: null,
+           _OPERATOR_: like,
+           _VALUE_EXPRESSION_: "${searchTerm}"
+         }
+       }`,
                 `{
-                    orWhere: {
-                        last_name: null
-                        _OPERATOR_: like
-                        _VALUE_EXPRESSION_: "${searchTerm}"
-                    }
-                }`,
+         orWhere: {
+           last_name: null,
+           _OPERATOR_: like,
+           _VALUE_EXPRESSION_: "${searchTerm}"
+         }
+       }`
             ];
 
-            // Add email condition if present
             if (state.search.includes("@")) {
                 clientConditions.push(`{
-                    orWhere: {
-                            email: null
-                            _OPERATOR_: like
-                            _VALUE_EXPRESSION_: "${searchTerm}"
-                        }
-                    }
-                `);
+        orWhere: {
+          email: null,
+          _OPERATOR_: like,
+          _VALUE_EXPRESSION_: "${searchTerm}"
+        }
+      }`);
             }
+
             queryClauses.push(`{
-                    andWhereGroup: [
-                        {
-                            where: {
-                                    ${clientConditions.join(',')}
-                            }
-                        }
-                    ]
-            }`);
+      andWhereGroup: [
+        ${clientConditions.join(",")}
+      ]
+    }`);
         }
 
         const gql = `
-            query fetchContacts($limit: IntScalar, $offset: IntScalar) {
-                  calcContacts(
-                  query: [${queryClauses.join(',')}]
-				  limit:  $limit
-                  offset: $offset
-                  orderBy: [{ path: ["created_at"], type: ${state.sortOrder} }]
-                ) {
-                  id:        field(arg:["id"])
-                  uniqueId:  field(arg:["unique_id"])
-                  fName:     field(arg:["first_name"])
-                  lName:     field(arg:["last_name"])
-                  email:     field(arg:["email"])
-                  phone:     field(arg:["sms_number"])
-                  dateAdded: field(arg:["created_at"]) @dateFormat(value: "MM-DD-YYYY")
-				  account_manager_override_inactive: field(arg:["account_manager_override_inactive"])
-                }
-            }
-        `;
+    query calcContacts($limit: IntScalar, $offset: IntScalar) {
+      calcContacts(
+        query: [ ${queryClauses.join(",")} ]
+        limit: $limit
+        offset: $offset
+        orderBy: [{ path: ["created_at"], type: ${state.sortOrder} }]
+      ) {
+        id:        field(arg:["id"])
+        uniqueId:  field(arg:["unique_id"])
+        fName:     field(arg:["first_name"])
+        lName:     field(arg:["last_name"])
+        email:     field(arg:["email"])
+        phone:     field(arg:["sms_number"])
+        dateAdded: field(arg:["created_at"]) @dateFormat(value: "MM-DD-YYYY")
+        account_manager_override_inactive: field(arg:["account_manager_override_inactive"])
+      }
+    }
+  `;
 
         const res = await fetch(apiEndpoint, {
             method: "POST",
@@ -209,6 +202,7 @@ const apiKey = "zeYfVRNaPP_E-fQxxHelQ";
         renderFooter(data.calcContacts.length);
         renderPagination(data.calcContacts.length);
     }
+
 
 
     function renderLoading() {
