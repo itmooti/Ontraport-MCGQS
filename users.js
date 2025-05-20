@@ -1,4 +1,4 @@
-   const apiKey = "zeYfVRNaPP_E-fQxxHelQ";
+const apiKey = "zeYfVRNaPP_E-fQxxHelQ";
     const apiEndpoint = "https://mcgqs.vitalstats.app/api/v1/graphql";
     let formToggler = document.querySelectorAll(".formToggler");
     let addUserForm = document.querySelector(".addUserForm ");
@@ -153,6 +153,17 @@
                     }
                 `);
             }
+            queryClauses.push(`{
+                    andWhereGroup: [
+                        {
+                            where: {
+                                Client: [
+                                    ${clientConditions.join(',')}
+                                ]
+                            }
+                        }
+                    ]
+            }`);
         }
 
         const gql = `
