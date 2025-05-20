@@ -157,9 +157,7 @@ const apiKey = "zeYfVRNaPP_E-fQxxHelQ";
                     andWhereGroup: [
                         {
                             where: {
-                                Client: [
                                     ${clientConditions.join(',')}
-                                ]
                             }
                         }
                     ]
