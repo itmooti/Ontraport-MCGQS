@@ -1,9 +1,3 @@
-// let visitorFromOp = "[Visitor//Company//Name]";
-let visitorFromOp = "Gallagher Melbourne";
-let jobStatusTypeFromOp = "Pending Inspection";
-let  jobStatusColorFromOp = "#10b981";
-let jobStatusConditionFromOp = "Pending Inspection";
-
 export default class Config {
   static apiKey = "zeYfVRNaPP_E-fQxxHelQ";
   static apiEndpoint = "https://mcgqs.vitalstats.app/api/v1/graphql";
