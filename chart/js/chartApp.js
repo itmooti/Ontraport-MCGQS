@@ -232,7 +232,7 @@ export default class ChartApp {
         this.readyCount++;
         if (this.readyCount === this.entities.length) {
           clearInterval(this.keepAliveInterval);
-          document.getElementById("loader").classList.add("hidden");
+          document.getElementById("barLoader").classList.add("hidden");
           const hasData = this.traces.bar.some((t) => t.y.some((v) => v > 0));
           if (hasData) {
             document.getElementById("chartGrid").classList.remove("hidden");
@@ -263,7 +263,7 @@ export default class ChartApp {
     this.resetTraces();
     document.getElementById("chartGrid").classList.add("hidden");
     document.getElementById("noDataMessage").classList.add("hidden");
-    document.getElementById("loader").classList.remove("hidden");
+    document.getElementById("barLoader").classList.remove("hidden");
     this.entities.forEach((e) => this.initializeSocket(e, granularity));
   }
 
