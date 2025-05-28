@@ -17,7 +17,7 @@ export default class ChartApp {
     };
     this.readyCount = 0;
     this.keepAliveInterval = null;
-    this.currentGranularity = "weekly";
+    this.currentGranularity = "yearly";
     this.selectedStart = null;
     this.selectedEnd = null;
     this.sockets = [];
