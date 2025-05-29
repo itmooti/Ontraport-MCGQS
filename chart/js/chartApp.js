@@ -2,7 +2,7 @@ import Config from "./config.js";
 
 export default class ChartApp {
   static refererNameCondition = "";
-  static updatedGranualarity = "weekly";
+  static updatedGranualarity = "yearly";
 
   constructor() {
     const statuses = Config.jobStatuses;
