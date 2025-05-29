@@ -300,14 +300,14 @@ export default class ChartApp {
         ["weeklyBtn", "monthlyBtn", "yearlyBtn"].forEach((x) => {
           document
             .getElementById(x)
-            .classList.replace("bg-blue-500", "bg-gray-300");
+            .classList.replace("bg-[var(--basic-color-bg-F7F7F7)] text-dark", "bg-gray-300");
           document
             .getElementById(x)
             .classList.replace("text-white", "text-gray-700");
         });
         document
           .getElementById(id)
-          .classList.replace("bg-gray-300", "bg-blue-500");
+          .classList.replace("bg-gray-300", "bg-[var(--basic-color-bg-F7F7F7)] text-dark");
         document
           .getElementById(id)
           .classList.replace("text-gray-700", "text-white");
