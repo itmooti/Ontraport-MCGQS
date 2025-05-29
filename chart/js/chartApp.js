@@ -97,86 +97,64 @@ export default class ChartApp {
     });
   }
 
-  renderCharts() {
+renderCharts() {
     const commonLayout = {
-      yaxis: { title: "Count" },
-      legend: {
-        orientation: "h",
-        x: 0,
-        xanchor: "left",
-        y: 1.15,
-        yanchor: "top",
-      },
+      yaxis: { title: 'Count' },
+      legend: { orientation: 'h', x: 0, xanchor: 'left', y: 1.15, yanchor: 'top' },
       margin: { t: 60, l: 60, r: 30, b: 120 },
-      barmode: "group",
+      barmode: 'group'
     };
-    const stackedLayout = { ...commonLayout, barmode: "stack" };
-
-    // Compute totals for gauge — one gauge per STATUS if you like, but here's the original single-gauge logic:
+    const stackedLayout = { ...commonLayout, barmode: 'stack' };
     const totalJobs = this.traces.bar
-      .find((t) => t.name === "Jobs")
+      .find(t => t.name === 'Jobs')
       .y.reduce((sum, v) => sum + v, 0);
-
-    // Pick the first status for gauge (just like before)
-    const firstStatus = Config.jobStatuses[0];
-    const statusJobs =
-      this.traces.bar
-        .find((t) => t.name === firstStatus.type)
+    const n = gaugeIndices.length;
+    const gap = 0.02;
+    const width = (1 - gap * (n - 1)) / n;
+    const gaugeTraces = gaugeIndices.map((idx, i) => {
+      const st = Config.jobStatuses[idx];
+      const stCount = this.traces.bar
+        .find(t => t.name === st.type)
         ?.y.reduce((sum, v) => sum + v, 0) || 0;
-
+      const domainStart = i * (width + gap);
+      const domainEnd = domainStart + width;
+      return {
+        type: 'indicator',
+        mode: 'gauge+number',
+        value: stCount,
+        title: { text: st.type },
+        domain: { x: [domainStart, domainEnd], y: [0, 1] },
+        gauge: {
+          axis: { range: [0, totalJobs] },
+          bar: { color: this.colors[st.type] },
+          steps: [
+            { range: [0, stCount], color: this.colors[st.type] },
+            { range: [stCount, totalJobs], color: this.colors['Jobs'] }
+          ]
+        }
+      };
+    });
     const gaugeLayout = {
       margin: { t: 60, b: 40, l: 20, r: 20 },
-      title: {
-        text: `${firstStatus.type} of Total Jobs`,
-        x: 0.5,
-        xanchor: "center",
-        font: { size: 18 },
-      },
-      showlegend: true,
+      grid: { rows: 1, columns: n, pattern: 'independent' }
     };
-
     const chartConfig = [
-      { id: "barChart", key: "bar", layout: commonLayout },
-      { id: "lineChart", key: "line", layout: commonLayout },
-      { id: "areaChart", key: "area", layout: commonLayout },
-      { id: "stackedBarChart", key: "stacked", layout: stackedLayout },
-      { id: "splineChart", key: "spline", layout: commonLayout },
-      { id: "stepChart", key: "step", layout: commonLayout },
-      { id: "comboChart", key: null, layout: commonLayout },
-      { id: "gaugeChart", key: "gauge", layout: gaugeLayout },
+      { id: 'barChart', key: 'bar', layout: commonLayout },
+      { id: 'lineChart', key: 'line', layout: commonLayout },
+      { id: 'areaChart', key: 'area', layout: commonLayout },
+      { id: 'stackedBarChart', key: 'stacked', layout: stackedLayout },
+      { id: 'splineChart', key: 'spline', layout: commonLayout },
+      { id: 'stepChart', key: 'step', layout: commonLayout },
+      { id: 'comboChart', key: null, layout: commonLayout }
     ];
-
-    chartConfig.forEach((c) => {
-      if (c.key === "gauge") {
-        const gaugeTrace = [
-          {
-            type: "indicator",
-            mode: "gauge",
-            value: statusJobs,
-            gauge: {
-              axis: { range: [0, totalJobs] },
-              bar: { color: this.colors[firstStatus.type] },
-              steps: [
-                {
-                  range: [0, statusJobs],
-                  color: this.colors[firstStatus.type],
-                },
-                { range: [statusJobs, totalJobs], color: this.colors["Jobs"] },
-              ],
-            },
-          },
-        ];
-        Plotly.newPlot(c.id, gaugeTrace, c.layout);
-      } else if (c.id === "comboChart") {
-        Plotly.newPlot(
-          c.id,
-          this.traces.bar.concat(this.traces.line),
-          c.layout
-        );
+    chartConfig.forEach(c => {
+      if (c.id === 'comboChart') {
+        Plotly.newPlot(c.id, this.traces.bar.concat(this.traces.line), c.layout);
       } else {
         Plotly.newPlot(c.id, this.traces[c.key], c.layout);
       }
     });
+    Plotly.newPlot('gaugeChart', gaugeTraces, gaugeLayout);
   }
 
   buildSubscriptionQuery(entity, granularity) {
