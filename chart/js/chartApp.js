@@ -2,14 +2,13 @@ import Config from "./config.js";
 
 export default class ChartApp {
   static refererNameCondition = "";
-  static updatedGranualarity = "yearly";
+  static updatedGranualarity = "weekly";
 
   constructor() {
     const statuses = Config.jobStatuses;
-    this.entities = ["Jobs", "Contacts", ...statuses.map((s) => s.type)];
+    this.entities = ["Jobs", ...statuses.map((s) => s.type)];
     this.colors = {
       Jobs: "#3b82f6",
-      Contacts: "#8b5cf6",
       ...statuses.reduce((acc, s) => {
         acc[s.type] = s.color;
         return acc;
@@ -25,7 +24,7 @@ export default class ChartApp {
     };
     this.readyCount = 0;
     this.keepAliveInterval = null;
-    this.currentGranularity = "weekly";
+    this.currentGranularity = "yearly";
     this.selectedStart = null;
     this.selectedEnd = null;
     this.sockets = [];
