@@ -372,12 +372,12 @@ export default class ChartApp {
       selectedContainer.innerHTML = "";
       selectedEntities.forEach((item) => {
         const badge = document.createElement("div");
-        badge.className =
-          "flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm";
+    badge.className =
+          "bg-[var(--basic-color-bg-F7F7F7)] text-dark py-2 px-3 rounded-[30px] border border-[var(--basic-color-primary-8CBE3F)] flex items-center gap-x-2 w-max ";
         badge.textContent = item;
         const remove = document.createElement("span");
         remove.innerHTML = "×";
-        remove.className = "ml-1 cursor-pointer";
+        remove.className = "flex items-center justify-center border border-[var(--basic-color-primary-8CBE3F)] rounded-full p-1 aspect-square text-[var(--primary-color)] ml-1 !leading-[0px]";
         remove.addEventListener("click", (e) => {
           e.stopPropagation();
           selectedEntities.splice(selectedEntities.indexOf(item), 1);
