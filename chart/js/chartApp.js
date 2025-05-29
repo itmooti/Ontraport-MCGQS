@@ -283,7 +283,7 @@ export default class ChartApp {
         });
         document
           .getElementById(id)
-          .classList.replace("bg-gray-300", "bg-blue-500");
+          .classList.replace("bg-gray-300", "bg-[var(--basic-color-primary-8CBE3F)]");
         document
           .getElementById(id)
           .classList.replace("text-gray-700", "text-white");
