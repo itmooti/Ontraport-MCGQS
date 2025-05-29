@@ -276,7 +276,7 @@ export default class ChartApp {
         ["weeklyBtn", "monthlyBtn", "yearlyBtn"].forEach((x) => {
           document
             .getElementById(x)
-            .classList.replace("bg-blue-500", "bg-gray-300");
+            .classList.replace("bg-[var(--basic-color-primary-8CBE3F)]", "bg-gray-300");
           document
             .getElementById(x)
             .classList.replace("text-white", "text-gray-700");
