@@ -265,7 +265,7 @@ export default class ChartApp {
     document.getElementById("noDataMessage").classList.add("hidden");
     document.getElementById("barLoader").classList.remove("hidden");
     this.entities.forEach((e) => this.initializeSocket(e, granularity));
-  }
+  } 
 
   setupControls() {
     this.loadData(this.currentGranularity);
