@@ -299,14 +299,14 @@ export default class ChartApp {
         ["weeklyBtn", "monthlyBtn", "yearlyBtn"].forEach((x) => {
           document
             .getElementById(x)
-            .classList.replace("bg-[var(--basic-color-bg-F7F7F7)]", "bg-gray-300");
+            .classList.replace("bg-[var(--basic-color-primary-8CBE3F)]", "bg-gray-300");
           document
             .getElementById(x)
             .classList.replace("text-white", "text-gray-700");
         });
         document
           .getElementById(id)
-          .classList.replace("bg-gray-300", "bg-[var(--basic-color-bg-F7F7F7)]");
+          .classList.replace("bg-gray-300", "bg-[var(--basic-color-primary-8CBE3F)]");
         document
           .getElementById(id)
           .classList.replace("text-gray-700", "text-white");
