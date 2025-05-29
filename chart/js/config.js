@@ -1,6 +1,6 @@
 export default class Config {
-  static apiKey = "zeYfVRNaPP_E-fQxxHelQ";
-  static apiEndpoint = "https://mcgqs.vitalstats.app/api/v1/graphql";
+  static apiKey = apiKey;
+  static apiEndpoint = apiEndpoint;
   static visitorReferralSource = visitorFromOp;
   static jobStatuses = allJobStatusAndColorAndConditions;
   static get wsUrl() {
