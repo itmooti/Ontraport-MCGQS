@@ -1,4 +1,4 @@
-import Config from "./config.js";
+import Config from "./config.js"; 
 const { jobStatusType, jobStatusTypeColor, jobStatusTypeCondtion } = Config;
 export default class ChartApp {
   static refererNameCondition = "";
