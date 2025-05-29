@@ -1,12 +1,20 @@
-import Config from "./config.js"; 
-const { jobStatusType, jobStatusTypeColor, jobStatusTypeCondtion } = Config;
+import Config from "./config.js";
+
 export default class ChartApp {
   static refererNameCondition = "";
   static updatedGranualarity = "weekly";
 
   constructor() {
-    this.entities = ["Jobs", jobStatusType];
-    this.colors = { Jobs: "#3b82f6", [jobStatusType]: jobStatusTypeColor };
+    const statuses = Config.jobStatuses;
+    this.entities = ["Jobs", "Contacts", ...statuses.map((s) => s.type)];
+    this.colors = {
+      Jobs: "#3b82f6",
+      Contacts: "#8b5cf6",
+      ...statuses.reduce((acc, s) => {
+        acc[s.type] = s.color;
+        return acc;
+      }, {}),
+    };
     this.traces = {
       bar: [],
       line: [],
@@ -17,7 +25,7 @@ export default class ChartApp {
     };
     this.readyCount = 0;
     this.keepAliveInterval = null;
-    this.currentGranularity = "yearly";
+    this.currentGranularity = "weekly";
     this.selectedStart = null;
     this.selectedEnd = null;
     this.sockets = [];
@@ -26,9 +34,11 @@ export default class ChartApp {
   get wsUrl() {
     return Config.wsUrl;
   }
+
   resetTraces() {
     Object.keys(this.traces).forEach((k) => (this.traces[k] = []));
   }
+
   buildTraces(entity, rows, bucketKey) {
     const x = [],
       y = [];
@@ -87,6 +97,7 @@ export default class ChartApp {
       marker: { color: clr },
     });
   }
+
   renderCharts() {
     const commonLayout = {
       yaxis: { title: "Count" },
@@ -101,10 +112,23 @@ export default class ChartApp {
       barmode: "group",
     };
     const stackedLayout = { ...commonLayout, barmode: "stack" };
+
+    // Compute totals for gauge — one gauge per STATUS if you like, but here's the original single-gauge logic:
+    const totalJobs = this.traces.bar
+      .find((t) => t.name === "Jobs")
+      .y.reduce((sum, v) => sum + v, 0);
+
+    // Pick the first status for gauge (just like before)
+    const firstStatus = Config.jobStatuses[0];
+    const statusJobs =
+      this.traces.bar
+        .find((t) => t.name === firstStatus.type)
+        ?.y.reduce((sum, v) => sum + v, 0) || 0;
+
     const gaugeLayout = {
       margin: { t: 60, b: 40, l: 20, r: 20 },
       title: {
-        text: `${jobStatusType} of Total Jobs`,
+        text: `${firstStatus.type} of Total Jobs`,
         x: 0.5,
         xanchor: "center",
         font: { size: 18 },
@@ -122,13 +146,6 @@ export default class ChartApp {
       { id: "comboChart", key: null, layout: commonLayout },
       { id: "gaugeChart", key: "gauge", layout: gaugeLayout },
     ];
-    const totalJobs = this.traces.bar
-      .find((t) => t.name === "Jobs")
-      .y.reduce((sum, v) => sum + v, 0);
-    const statusJobs =
-      this.traces.bar
-        .find((t) => t.name === jobStatusType)
-        ?.y.reduce((sum, v) => sum + v, 0) || 0;
 
     chartConfig.forEach((c) => {
       if (c.key === "gauge") {
@@ -139,9 +156,12 @@ export default class ChartApp {
             value: statusJobs,
             gauge: {
               axis: { range: [0, totalJobs] },
-              bar: { color: this.colors[jobStatusType] },
+              bar: { color: this.colors[firstStatus.type] },
               steps: [
-                { range: [0, statusJobs], color: this.colors[jobStatusType] },
+                {
+                  range: [0, statusJobs],
+                  color: this.colors[firstStatus.type],
+                },
                 { range: [statusJobs, totalJobs], color: this.colors["Jobs"] },
               ],
             },
@@ -161,7 +181,6 @@ export default class ChartApp {
   }
 
   buildSubscriptionQuery(entity, granularity) {
-    const target = entity === `${jobStatusType}` ? "Jobs" : entity;
     let B = "X_WEEK_BEGIN",
       E = "X_WEEK_END",
       F = "DAY";
@@ -175,28 +194,33 @@ export default class ChartApp {
       E = "X_YEAR_END";
       F = "MONTH";
     }
+
+    // LOOK UP THE RIGHT CONDITION FOR THIS ENTITY
+    const jobStatus = Config.jobStatuses.find((s) => s.type === entity) || {};
+    const statusFilter =
+      entity === jobStatus.type
+        ? `{andWhere:{job_status:"${jobStatus.condition}"}}`
+        : "";
+    const target = entity === jobStatus.type ? "Jobs" : entity;
     const referralFilter =
-      entity === "Jobs" || entity === `${jobStatusType}`
+      entity === "Jobs" || entity === jobStatus.type
         ? `{andWhere: {Referral_Source: [{where: {Company: [{ where: { name: "${Config.visitorReferralSource}" } }]}}]}}`
         : "";
-    const statusFilter =
-      entity === `${jobStatusType}`
-        ? `{andWhere:{job_status:"${jobStatusTypeCondtion}"}}`
-        : "";
+
     return {
       query: `
-          subscription sub${target}($${B}:TimestampSecondsScalar,$${E}:TimestampSecondsScalar){
-            subscribeToCalc${target}(query:[
-              {where:{created_at:$${B},_OPERATOR_:gte}}
-              {andWhere:{created_at:$${E},_OPERATOR_:lte}}
-               ${statusFilter}
-               ${referralFilter}
-               ${ChartApp.refererNameCondition}
-            ]){
-              totalCount:count(args:[{field:["id"]}])
-              bucket:field(arg:["created_at"])@dateFormat(value:"${F}")
-            }
-          }`,
+        subscription sub${target}($${B}:TimestampSecondsScalar,$${E}:TimestampSecondsScalar){
+          subscribeToCalc${target}(query:[
+            {where:{created_at:$${B},_OPERATOR_:gte}}
+            {andWhere:{created_at:$${E},_OPERATOR_:lte}}
+             ${statusFilter}
+             ${referralFilter}
+             ${ChartApp.refererNameCondition}
+          ]){
+            totalCount:count(args:[{field:["id"]}])
+            bucket:field(arg:["created_at"])@dateFormat(value:"${F}")
+          }
+        }`,
       variables: { [B]: 0, [E]: 0 },
     };
   }
@@ -232,7 +256,7 @@ export default class ChartApp {
         this.readyCount++;
         if (this.readyCount === this.entities.length) {
           clearInterval(this.keepAliveInterval);
-          document.getElementById("barLoader").classList.add("hidden");
+          document.getElementById("loader").classList.add("hidden");
           const hasData = this.traces.bar.some((t) => t.y.some((v) => v > 0));
           if (hasData) {
             document.getElementById("chartGrid").classList.remove("hidden");
@@ -263,9 +287,9 @@ export default class ChartApp {
     this.resetTraces();
     document.getElementById("chartGrid").classList.add("hidden");
     document.getElementById("noDataMessage").classList.add("hidden");
-    document.getElementById("barLoader").classList.remove("hidden");
+    document.getElementById("loader").classList.remove("hidden");
     this.entities.forEach((e) => this.initializeSocket(e, granularity));
-  } 
+  }
 
   setupControls() {
     this.loadData(this.currentGranularity);
@@ -276,21 +300,22 @@ export default class ChartApp {
         ["weeklyBtn", "monthlyBtn", "yearlyBtn"].forEach((x) => {
           document
             .getElementById(x)
-            .classList.replace("bg-[var(--basic-color-primary-8CBE3F)]", "bg-gray-300");
+            .classList.replace("bg-blue-500", "bg-gray-300");
           document
             .getElementById(x)
             .classList.replace("text-white", "text-gray-700");
         });
         document
           .getElementById(id)
-          .classList.replace("bg-gray-300", "bg-[var(--basic-color-primary-8CBE3F)]");
+          .classList.replace("bg-gray-300", "bg-blue-500");
         document
           .getElementById(id)
           .classList.replace("text-gray-700", "text-white");
-        $("#dateRange").val("");
         this.loadData(this.currentGranularity);
       });
     });
+
+
 
     // Multi-select dropdown
     const multiselect = document.getElementById("multiselect");
@@ -352,7 +377,7 @@ export default class ChartApp {
       selectedEntities.forEach((item) => {
         const badge = document.createElement("div");
         badge.className =
-          "flex items-center bg-[var(--basic-color-bg-F7F7F7)] text-dark border-[var(--basic-color-primary-8CBE3F)] px-2 py-1 rounded-full text-sm";
+          "flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm";
         badge.textContent = item;
         const remove = document.createElement("span");
         remove.innerHTML = "×";
