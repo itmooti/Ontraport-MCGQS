@@ -352,7 +352,7 @@ export default class ChartApp {
       selectedEntities.forEach((item) => {
         const badge = document.createElement("div");
         badge.className =
-          "flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm";
+          "flex items-center bg-[var(--basic-color-bg-F7F7F7)] text-dark border-[var(--basic-color-primary-8CBE3F)] px-2 py-1 rounded-full text-sm";
         badge.textContent = item;
         const remove = document.createElement("span");
         remove.innerHTML = "×";
