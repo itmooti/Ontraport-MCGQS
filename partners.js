@@ -43,27 +43,26 @@
     
   formClose?.addEventListener("click", hideForm);
 
+function initSortIndicators() {
+  tableHeaders.forEach((th) => {
+    if (!th.querySelector(".sort-indicator")) {
+      const span = document.createElement("span");
+      span.className = "sort-indicator";
+      th.appendChild(span);
+    }
+  });
+}
 
-  function initSortIndicators() {
-    tableHeaders.forEach((th) => {
-      if (!th.querySelector(".sort-indicator")) {
-        const span = document.createElement("span");
-        span.className = "sort-indicator";
-        th.appendChild(span);
-      }
-    });
-  }
-
-  function updateSortIndicators() {
-    tableHeaders.forEach((th) => {
-      const span = th.querySelector(".sort-indicator");
-      if (th.dataset.field === state.sortField) {
-        span.textContent = state.sortOrder === "asc" ? "▲" : "▼";
-      } else {
-        span.textContent = "▼";
-      }
-    });
-  }
+function updateSortIndicators() {
+  tableHeaders.forEach((th) => {
+    const span = th.querySelector(".sort-indicator");
+    if (th.dataset.field === state.sortField) {
+      span.textContent = state.sortOrder === "asc" ? "▲" : "▼";
+    } else {
+      span.textContent = "▼";
+    }
+  });
+}
 
   tableHeaders.forEach((th) => {
     th.addEventListener("click", () => {
