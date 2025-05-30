@@ -48,7 +48,7 @@ function initSortIndicators() {
     const flexSpan = th.querySelector("span.flex.items-center");
     if (flexSpan && !flexSpan.querySelector(".sort-indicator")) {
       const span = document.createElement("span");
-      span.className = "sort-indicator";
+      span.className = "sort-indicator ml-1 text-[8px]";
       span.textContent = "▼";
       flexSpan.appendChild(span);
     }
