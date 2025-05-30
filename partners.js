@@ -45,21 +45,25 @@
 
 function initSortIndicators() {
   tableHeaders.forEach((th) => {
-    if (!th.querySelector(".sort-indicator")) {
+    const flexSpan = th.querySelector("span.flex.items-center");
+    if (flexSpan && !flexSpan.querySelector(".sort-indicator")) {
       const span = document.createElement("span");
       span.className = "sort-indicator";
-      th.appendChild(span);
+      span.textContent = "▼";
+      flexSpan.appendChild(span);
     }
   });
 }
 
 function updateSortIndicators() {
   tableHeaders.forEach((th) => {
-    const span = th.querySelector(".sort-indicator");
-    if (th.dataset.field === state.sortField) {
-      span.textContent = state.sortOrder === "asc" ? "▲" : "▼";
-    } else {
-      span.textContent = "▼";
+    const span = th.querySelector("span.sort-indicator");
+    if (span) {
+      if (th.dataset.field === state.sortField) {
+        span.textContent = state.sortOrder === "asc" ? "▲" : "▼";
+      } else {
+        span.textContent = "▼";
+      }
     }
   });
 }
