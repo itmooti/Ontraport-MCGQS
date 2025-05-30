@@ -99,11 +99,11 @@ function updateSortIndicators() {
 
   function createTag(label, value, onRemove) {
     const span = document.createElement("span");
-    span.className = "filter-tag p-1 bg-[var(--complementary-color)] text-[var(--white-color)] italic";
+    span.className = "filter-tag bg-[var(--basic-color-bg-F7F7F7)] text-dark py-2 px-3 rounded-[30px] border border-[var(--basic-color-primary-8CBE3F)] flex items-center gap-x-2 w-max";
     span.textContent = `${label}: ${value} `;
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "remove-tag";
+    btn.className = "remove-tag flex items-center justify-center border border-[var(--basic-color-primary-8CBE3F)] rounded-full p-1 aspect-square text-[var(--primary-color)]";
     btn.textContent = "×";
     btn.onclick = onRemove;
     span.appendChild(btn);
