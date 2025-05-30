@@ -308,7 +308,7 @@ renderCharts() {
       dropdownEntities.forEach((item) => {
         const li = document.createElement("li");
         li.className =
-          "flex items-center px-2 py-1 hover:bg-gray-100 cursor-pointer";
+          "flex items-center px-2 py-1 hover:bg-[var(--basic-color-bg-F7F7F7)] cursor-pointer";
         li.addEventListener("click", (e) => {
           e.stopPropagation();
           const idx = selectedEntities.indexOf(item);
@@ -328,7 +328,7 @@ renderCharts() {
       });
       const applyLi = document.createElement("li");
       applyLi.className =
-        "px-2 py-2 flex justify-center hover:bg-gray-100 cursor-pointer";
+        "px-2 py-2 flex justify-center hover:bg-[var(--basic-color-bg-F7F7F7)] cursor-pointer";
       const applyButton = document.createElement("button");
       applyButton.textContent = "Apply";
       applyButton.className = "bg-[var(--primary-color)] text-[var(--white-color)] px-3 py-1 rounded w-full";
@@ -350,7 +350,7 @@ renderCharts() {
       selectedEntities.forEach((item) => {
         const badge = document.createElement("div");
     badge.className =
-          "bg-[var(--basic-color-bg-F7F7F7)] text-dark py-2 px-3 rounded-[30px] border border-[var(--basic-color-primary-8CBE3F)] flex items-center gap-x-2 w-max ";
+          "bg-[var(--basic-color-bg-F7F7F7)] text-[var(--dark-color)] py-2 px-3 rounded-[30px] border border-[var(--basic-color-primary-8CBE3F)] flex items-center gap-x-2 w-max ";
         badge.textContent = item;
         const remove = document.createElement("span");
         remove.innerHTML = "×";
