@@ -354,7 +354,7 @@ renderCharts() {
         badge.textContent = item;
         const remove = document.createElement("span");
         remove.innerHTML = "×";
-        remove.className = "flex items-center justify-center border border-[var(--basic-color-primary-8CBE3F)] rounded-full p-1 aspect-square text-[var(--primary-color)] ml-1 !leading-[0px]";
+        remove.className = "cursor-pointer flex items-center justify-center border border-[var(--basic-color-primary-8CBE3F)] rounded-full p-1 aspect-square text-[var(--primary-color)] ml-1 !leading-[0px]";
         remove.addEventListener("click", (e) => {
           e.stopPropagation();
           selectedEntities.splice(selectedEntities.indexOf(item), 1);
