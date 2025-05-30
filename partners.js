@@ -47,7 +47,7 @@ function initSortIndicators() {
   tableHeaders.forEach((th) => {
     if (!th.querySelector(".sort-indicator")) {
       const span = document.createElement("span");
-      span.className = "sort-indicator ml-1 text-[8px]";
+      span.className = "sort-indicator";
       th.appendChild(span);
     }
   });
