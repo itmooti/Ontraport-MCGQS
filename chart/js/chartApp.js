@@ -277,17 +277,17 @@ renderCharts() {
         ["weeklyBtn", "monthlyBtn", "yearlyBtn"].forEach((x) => {
           document
             .getElementById(x)
-            .classList.replace("bg-[var(--basic-color-primary-8CBE3F)]", "bg-gray-300");
+            .classList.replace("bg-[var(--basic-color-primary-8CBE3F)]", "bg-[var(--basic-color-line-EEEEEEEEEEEE)]");
           document
             .getElementById(x)
-            .classList.replace("text-white", "text-gray-700");
+            .classList.replace("text-[var(--white-color)]", "text-[var(--dark-color)]");
         });
         document
           .getElementById(id)
-          .classList.replace("bg-gray-300", "bg-[var(--basic-color-primary-8CBE3F)]");
+          .classList.replace("bg-[var(--basic-color-line-EEEEEEEEEEEE)]", "bg-[var(--basic-color-primary-8CBE3F)]");
         document
           .getElementById(id)
-          .classList.replace("text-gray-700", "text-white");
+          .classList.replace("text-[var(--dark-color)]", "text-[var(--white-color)]");
         this.loadData(this.currentGranularity);
       });
     });
