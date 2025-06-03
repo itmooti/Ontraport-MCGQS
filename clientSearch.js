@@ -3,13 +3,12 @@
   let customOverlay = document.querySelector(".customOverlay");
   let formClose = document.querySelector(".formClose");
 
-function showForm() {
-        testForm?.classList.remove("hidden");
+   function showForm() {
+        testForm?.classList.remove("!translate-x-full"); //hidden initially
         customOverlay?.classList.remove("hidden");
     }
-
     function hideForm() {
-        testForm?.classList.add("hidden");
+        testForm?.classList.add("!translate-x-full"); //hidden initially
         customOverlay?.classList.add("hidden");
     }
 
