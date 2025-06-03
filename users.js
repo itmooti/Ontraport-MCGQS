@@ -27,12 +27,11 @@ const apiKey = "zeYfVRNaPP_E-fQxxHelQ";
     });
 
     function showForm() {
-        addUserForm?.classList.remove("hidden");
+        testForm?.classList.remove("!translate-x-full"); //hidden initially
         customOverlay?.classList.remove("hidden");
     }
-
     function hideForm() {
-        addUserForm?.classList.add("hidden");
+        testForm?.classList.add("!translate-x-full"); //hidden initially
         customOverlay?.classList.add("hidden");
     }
 
