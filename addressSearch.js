@@ -1,13 +1,7 @@
 const inputField = document.getElementById('autocomplete');
 const pacContainers = document.querySelectorAll('.pac-container');
-
-function showDropdown() {
-    pacContainers.forEach(el => el.style.setProperty('display', 'block', 'important'));
-}
-function hideDropdown() {
-    pacContainers.forEach(el => el.style.setProperty('display', 'none', 'important'));
-}
-
+function showDropdown() {pacContainers.forEach(el => el.style.setProperty('display', 'block', 'important'));}
+function hideDropdown() {pacContainers.forEach(el => el.style.setProperty('display', 'none', 'important'));}
 let FETCH_PROPERTIES_QUERY = `
 query getProperty($property_name: TextScalar) {
 getProperty(
@@ -25,7 +19,6 @@ getProperty(
 }
 }
 `;
-
 async function fetchProperties(propertyName) {
     if (!propertyName) return [];
     try {
@@ -72,9 +65,8 @@ document.addEventListener('DOMContentLoaded', function () {
         clearFields();
 
         const lotno = document.getElementById('lotNo')?.value || '';
-        const unitno = document.getElementById('unitNo')?.value || '';
+        let unitno = document.getElementById('unitNo')?.value || '';
         let address1 = '';
-        let address2 = '';
         let city = '';
         let state = '';
         let postcode = '';
@@ -88,11 +80,10 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (types.includes('route')) {
                 address1 += ` ${c.long_name}`;
             } else if (
-                types.includes('subpremise') ||
-                types.includes('neighborhood') ||
-                types.includes('sublocality_level_1')
+                types.includes('subpremise')
             ) {
-                address2 = c.long_name;
+                // Use subpremise (e.g., Unit/Apartment) as unit number if not provided
+                if (!unitno) unitno = c.long_name;
             } else if (types.includes('locality')) {
                 city = c.long_name;
             } else if (types.includes('administrative_area_level_1')) {
@@ -107,8 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const fullAddress = [
             lotno,
             unitno,
-            address1,
-            address2
+            address1
         ].filter(Boolean).join(' ') + `, ${city}, ${state} ${postcode}`;
 
         const properties = await fetchProperties(fullAddress);
@@ -123,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
             lotno,
             unitno,
             address1,
-            address2,
             city,
             state,
             postcode,
@@ -148,7 +137,6 @@ function clearFields() {
     document.getElementById('autocomplete').value = '';
     document.querySelector('.unit input').value = '';
     document.querySelector('.address1 input').value = '';
-    document.querySelector('.address2 input').value = '';
     document.querySelector('.propertyname input').value = '';
     document.querySelector('.suburb input').value = '';
     document.querySelector('.postcode input').value = '';
@@ -160,7 +148,6 @@ function populateFields({
     lotno,
     unitno,
     address1,
-    address2,
     city,
     state,
     postcode,
@@ -172,7 +159,6 @@ function populateFields({
         ? unitno + (lotno ? '/' + lotno : '')
         : lotno;
     document.querySelector('.address1 input').value = address1;
-    document.querySelector('.address2 input').value = address2;
     document.querySelector('.suburb input').value = city;
     document.querySelector('.postcode input').value = postcode;
     document.querySelector('.state input').value = state;
