@@ -1,7 +1,13 @@
 const inputField = document.getElementById('autocomplete');
 const pacContainers = document.querySelectorAll('.pac-container');
-function showDropdown() {pacContainers.forEach(el => el.style.setProperty('display', 'block', 'important'));}
-function hideDropdown() {pacContainers.forEach(el => el.style.setProperty('display', 'none', 'important'));}
+
+function showDropdown() {
+    pacContainers.forEach(el => el.style.setProperty('display', 'block', 'important'));
+}
+function hideDropdown() {
+    pacContainers.forEach(el => el.style.setProperty('display', 'none', 'important'));
+}
+
 let FETCH_PROPERTIES_QUERY = `
 query getProperty($property_name: TextScalar) {
 getProperty(
