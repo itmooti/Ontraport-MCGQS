@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const lotno = document.getElementById('lotNo')?.value || '';
         let unitno = document.getElementById('unitNo')?.value || '';
         let address1 = '';
+        let streetNumber = '';
         let city = '';
         let state = '';
         let postcode = '';
@@ -82,9 +83,11 @@ document.addEventListener('DOMContentLoaded', function () {
         place.address_components.forEach(c => {
             const types = c.types;
             if (types.includes('street_number')) {
-                address1 = c.long_name;
+                // Do not place street number into address1; capture separately
+                streetNumber = c.long_name;
             } else if (types.includes('route')) {
-                address1 += ` ${c.long_name}`;
+                // address1 should only be the street name (route)
+                address1 = c.long_name;
             } else if (
                 types.includes('subpremise')
             ) {
@@ -104,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const fullAddress = [
             lotno,
             unitno,
+            streetNumber,
             address1
         ].filter(Boolean).join(' ') + `, ${city}, ${state} ${postcode}`;
 
@@ -119,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
             lotno,
             unitno,
             address1,
+            streetNumber,
             city,
             state,
             postcode,
@@ -154,6 +159,7 @@ function populateFields({
     lotno,
     unitno,
     address1,
+    streetNumber,
     city,
     state,
     postcode,
@@ -161,9 +167,11 @@ function populateFields({
     fullAddress
 }) {
     document.querySelector('.propertyname input').value = fullAddress;
-    document.querySelector('.unit input').value = unitno
-        ? unitno + (lotno ? '/' + lotno : '')
-        : lotno;
+    const unitParts = [];
+    if (unitno) unitParts.push(unitno);
+    if (lotno) unitParts.push(lotno);
+    if (streetNumber) unitParts.push(streetNumber);
+    document.querySelector('.unit input').value = unitParts.join('/');
     document.querySelector('.address1 input').value = address1;
     document.querySelector('.suburb input').value = city;
     document.querySelector('.postcode input').value = postcode;
